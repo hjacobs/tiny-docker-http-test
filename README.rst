@@ -1,8 +1,9 @@
 ===========================
-Tiny Docker HTTP Test Image
+Tiny Docker HTTP/Docker Test Image
 ===========================
 
-Smallest possible Docker image to get a running HTTP server.
+Docker image which sets up an http server and runs a docker build inside the container.
+It is mentioned to be used for testing docker inside docker functionality.
 
 .. code-block:: bash
 
