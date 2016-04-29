@@ -31,7 +31,11 @@ func buildRandomImage() (*map[string]string, error) {
         check(err)
         out, err := exec.Command("docker", "build", "--no-cache", "./resources").Output()
         result := make(map[string]string)
-        result["output"] = string(out)
+        if err != nil {
+                result["output"] = err.Error()
+        } else {
+                result["output"] = string(out)
+        }
         return &result, err
 }
 
@@ -51,7 +55,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
         fmt.Printf("Handling %s request for %s from %s..\n", r.Method, r.URL, r.RemoteAddr)
         dockerVersionResult, err := checkDockerVersion()
         if err != nil {
-                response := &Response{Success:"false", Output:(*dockerVersionResult)["output"]}
+                fmt.Println("ERROR: Something went wrong when checking docker version:", err.Error())
+                response := &Response{Success:"false", Output:err.Error()}
                 json, err := json.Marshal(response)
                 check(err)
                 w.WriteHeader(http.StatusNotFound)
@@ -61,7 +66,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
         fmt.Println("Using docker client", (*dockerVersionResult)["version"])
         imgCreationResult, err := buildRandomImage()
         if err != nil {
-                response := &Response{Success:"false", Output:(*imgCreationResult)["output"]}
+                fmt.Println("ERROR: Something went wrong when building docker image:", err.Error())
+                response := &Response{Success:"false", Output:err.Error()}
                 json, err := json.Marshal(response)
                 check(err)
                 w.WriteHeader(http.StatusNotFound)
