@@ -1,8 +1,10 @@
 FROM scratch
-
 MAINTAINER Henning Jacobs <henning@jacobs1.de>
 
-COPY main /main
-COPY scm-source.json /
+# add scm-source
+ADD scm-source.json /
 
-CMD ["/main"]
+# add binary
+ADD build/linux/tiny-docker-http-test /
+
+CMD ["/tiny-docker-http-test"]
